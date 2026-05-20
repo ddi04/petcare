@@ -231,13 +231,13 @@ function BookingForm({ onBooked }: { onBooked: () => void }) {
 function getDefaultArrivalTime() {
   const arrivalTime = new Date();
   arrivalTime.setDate(arrivalTime.getDate() + 1);
-  arrivalTime.setHours(9, 30, 0, 0);
+  arrivalTime.setHours(10, 30, 0, 0);
 
   const year = arrivalTime.getFullYear();
   const month = String(arrivalTime.getMonth() + 1).padStart(2, "0");
   const day = String(arrivalTime.getDate()).padStart(2, "0");
 
-  return `${year}-${month}-${day}T09:30`;
+  return `${year}-${month}-${day}T10:30`;
 }
 
 function Field({
