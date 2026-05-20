@@ -513,7 +513,7 @@ export default function Home() {
         </section>
 
         <section
-          className="grid grid-cols-[minmax(0,1fr)_minmax(320px,0.85fr)] items-center gap-10 bg-[var(--ink)] px-[6vw] py-[82px] text-white max-[980px]:grid-cols-1 max-sm:px-[18px]"
+          className="grid grid-cols-1 gap-8 bg-[var(--ink)] px-[6vw] py-[82px] text-white max-sm:px-[18px]"
           id="contact"
         >
           <div>
@@ -540,7 +540,7 @@ export default function Home() {
           <div className="overflow-hidden rounded-lg bg-[var(--soft)] shadow-[0_18px_50px_rgba(31,42,46,0.12)]">
             <Image
               alt="暖爪宠物洗护店长沙市天心区万家丽南路88号地图位置示意"
-              className="h-auto min-h-[360px] w-full object-cover"
+              className="h-auto w-full object-contain"
               height={820}
               src="/assets/changsha-location-map-ai.png"
               width={900}
