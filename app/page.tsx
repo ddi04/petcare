@@ -136,6 +136,8 @@ function Header() {
 }
 
 function BookingForm({ onBooked }: { onBooked: () => void }) {
+  const [defaultArrivalTime] = useState(getDefaultArrivalTime);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     event.currentTarget.reset();
@@ -176,6 +178,14 @@ function BookingForm({ onBooked }: { onBooked: () => void }) {
             <option>皮毛护理</option>
           </select>
         </Field>
+        <Field label="期望到店时间">
+          <input
+            defaultValue={defaultArrivalTime}
+            name="arrivalTime"
+            required
+            type="datetime-local"
+          />
+        </Field>
         <Field label="备注">
           <textarea name="note" placeholder="例如：怕吹风、容易紧张、需要剪指甲" />
         </Field>
@@ -188,6 +198,18 @@ function BookingForm({ onBooked }: { onBooked: () => void }) {
       </div>
     </form>
   );
+}
+
+function getDefaultArrivalTime() {
+  const arrivalTime = new Date();
+  arrivalTime.setDate(arrivalTime.getDate() + 1);
+  arrivalTime.setHours(9, 30, 0, 0);
+
+  const year = arrivalTime.getFullYear();
+  const month = String(arrivalTime.getMonth() + 1).padStart(2, "0");
+  const day = String(arrivalTime.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T09:30`;
 }
 
 function Field({
