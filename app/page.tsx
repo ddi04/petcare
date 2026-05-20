@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import type { FormEvent, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const navItems = [
   { href: "#services", label: "服务" },
@@ -103,6 +103,34 @@ const reviews = [
   {
     body: "金毛掉毛季救星，梳完轻了好多。还提醒我耳朵有点潮，后续护理建议很实用。",
     name: "Lucky主人"
+  }
+];
+
+const reviewSlides = [
+  ...reviews,
+  {
+    body: "第一次带老年犬来做洗护，店员先问了用药和关节情况，洗的过程中也一直放慢节奏。回家后状态很好，毛也蓬松了很多。",
+    name: "奶糖主人"
+  },
+  {
+    body: "之前在别的地方修剪总是两边不对称，这次会先沟通想保留的长度，还给了日常梳毛建议，细节很让人放心。",
+    name: "Mochi主人"
+  },
+  {
+    body: "我家小狗特别怕陌生人，工作人员没有急着上手，先陪它熟悉环境。整个过程比想象中顺利，最后还拍了护理前后对比照。",
+    name: "可乐主人"
+  },
+  {
+    body: "透明玻璃区可以看到护理过程，烘干时也不是一直猛吹。耳朵和脚底处理得很干净，价格和服务都很匹配。",
+    name: "布丁主人"
+  },
+  {
+    body: "猫咪毛结比较严重，本来担心会剃得很丑，结果处理得很耐心，还保留了自然的形状。后续护理说明写得很清楚。",
+    name: "团子主人"
+  },
+  {
+    body: "预约时间控制得很好，到店不用等太久。洗完身上香味很淡，不刺鼻，摸起来清爽柔软，已经准备固定来了。",
+    name: "阿福主人"
   }
 ];
 
@@ -312,6 +340,103 @@ function EnvironmentCarousel() {
   );
 }
 
+function ReviewCarousel() {
+  const pages = useMemo(() => {
+    const grouped = [];
+
+    for (let index = 0; index < reviewSlides.length; index += 3) {
+      grouped.push(reviewSlides.slice(index, index + 3));
+    }
+
+    return grouped;
+  }, []);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  function showPage(index: number) {
+    setCurrentPage((index + pages.length) % pages.length);
+  }
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCurrentPage((page) => (page + 1) % pages.length);
+    }, 4800);
+
+    return () => window.clearInterval(timer);
+  }, [pages.length]);
+
+  return (
+    <div className="relative">
+      <div
+        aria-label="顾客评价轮播"
+        className="overflow-hidden"
+      >
+        <div
+          className="flex transition-transform duration-700 ease-out"
+          style={{ transform: `translateX(-${currentPage * 100}%)` }}
+        >
+          {pages.map((page, pageIndex) => (
+            <div
+              className="grid flex-[0_0_100%] grid-cols-3 gap-[18px] pr-px max-[980px]:grid-cols-2 max-sm:grid-cols-1"
+              key={`review-page-${pageIndex}`}
+            >
+              {page.map((review, reviewIndex) => (
+                <article
+                  className="flex min-h-[260px] flex-col justify-between rounded-lg border border-[var(--line)] bg-[var(--paper)] p-6 shadow-[0_14px_34px_rgba(31,42,46,0.06)]"
+                  key={review.name}
+                >
+                  <div>
+                    <div className="mb-3 text-lg tracking-[2px] text-[var(--gold)]">★★★★★</div>
+                    <p className="m-0 text-[var(--muted)]">{review.body}</p>
+                  </div>
+                  <div className="mt-5 flex items-center gap-3">
+                    <span className="grid size-10 place-items-center rounded-full bg-[#e5f2ed] text-sm font-extrabold text-[#2f7665]">
+                      {reviewIndex + pageIndex * 3 + 1}
+                    </span>
+                    <strong className="m-0 text-xl">{review.name}</strong>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mt-6 flex items-center justify-between gap-4 max-sm:flex-col max-sm:items-stretch">
+        <div className="flex gap-2.5 max-sm:justify-center">
+          {pages.map((_, index) => (
+            <button
+              aria-label={`显示第 ${index + 1} 组评价`}
+              className={`h-1.5 w-10 cursor-pointer rounded-full border-0 transition-colors ${
+                index === currentPage ? "bg-[var(--mint)]" : "bg-[#cfd9d4]"
+              }`}
+              key={`review-dot-${index}`}
+              onClick={() => showPage(index)}
+              type="button"
+            />
+          ))}
+        </div>
+        <div className="flex gap-2.5 max-sm:justify-center">
+          <button
+            aria-label="上一组评价"
+            className="grid size-[42px] cursor-pointer place-items-center rounded-full border border-[var(--line)] bg-white text-xl text-[var(--ink)] shadow-[0_10px_24px_rgba(31,42,46,0.08)]"
+            onClick={() => showPage(currentPage - 1)}
+            type="button"
+          >
+            ‹
+          </button>
+          <button
+            aria-label="下一组评价"
+            className="grid size-[42px] cursor-pointer place-items-center rounded-full border border-[var(--line)] bg-white text-xl text-[var(--ink)] shadow-[0_10px_24px_rgba(31,42,46,0.08)]"
+            onClick={() => showPage(currentPage + 1)}
+            type="button"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Toast({ show }: { show: boolean }) {
   return (
     <div
@@ -498,18 +623,7 @@ export default function Home() {
             body="好看的造型当然重要，但毛孩子愿意再来，才是我们更在意的事。"
             title="顾客口碑"
           />
-          <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-sm:grid-cols-1">
-            {reviews.map((review) => (
-              <article
-                className="rounded-lg border border-[var(--line)] bg-[var(--paper)] p-6"
-                key={review.name}
-              >
-                <div className="text-lg tracking-[2px] text-[var(--gold)]">★★★★★</div>
-                <p className="text-[var(--muted)]">{review.body}</p>
-                <strong className="m-0 text-xl">{review.name}</strong>
-              </article>
-            ))}
-          </div>
+          <ReviewCarousel />
         </section>
 
         <section
